@@ -63,6 +63,8 @@ void setup()
 
   // Démarrage d'une liason série avec le PC
   Serial.begin(9600);
+  Serial.println("Terminal Série");
+  Serial.println("Projet Fibre Optique");
 
   // Config des pins des boutons
   pinMode(A3, INPUT_PULLUP);
@@ -157,7 +159,7 @@ void loop()
       HalfPeriod_us = (unsigned long)(0.5 * 1e6 / (float)Freq[FreqSelect]);
 
       lcd.setCursor(0, 0);
-      Serial.println(ModeDescription[ModeSelect]);
+      //Serial.println(ModeDescription[ModeSelect]);
       lcd.print(ModeDescription[ModeSelect]);
       indexToSend = index = 0;
       clearString(StringRX);
@@ -166,12 +168,12 @@ void loop()
       lcd.setCursor(0, 1);
 
       if (ModeSelect == BLINK)
-        sprintf(str, "FREQ %6ld Hz", Freq[FreqSelect]);
+        sprintf(str, "FREQ %6ld Hz  ", Freq[FreqSelect]);
       else if (ModeSelect == ON || ModeSelect == OFF)
         sprintf(str, "                ");
       else
         sprintf(str, "COM %6ld bit/s", ComSpeed[SpeedSelect]);
-      Serial.println(ComSpeed[SpeedSelect]);
+      //Serial.println(ComSpeed[SpeedSelect]);
       lcd.print(str);
 
       refresh = false;
@@ -259,6 +261,7 @@ void loop()
 
     if (c != 0)
     {
+      Serial.print(c);
       if (index < 14)
       {
         StringRX[index] = c;
@@ -282,8 +285,10 @@ void loop()
     if (Serial.available())
     {
       char c = Serial.read();
-      if (c < ' ') // Si le caractère est imprimable
-        break;
+      if (c < ' ') // Si le caractère n'est pas imprimable on met un espace
+        c = ' ';
+      // break;
+      // Serial.print((int)c);Serial.print(" ");
       if (index < 14)
       {
         StringTX[index] = c;
